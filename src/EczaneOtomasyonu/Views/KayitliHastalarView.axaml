@@ -1,0 +1,302 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EczaneOtomasyonu.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="EczaneOtomasyonu.Views.KayitliHastalarView"
+             x:DataType="vm:KayitliHastalarViewModel"
+             Background="Transparent">
+
+    <Design.DataContext>
+        <vm:KayitliHastalarViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- ── Üst Araç Çubuğu: Başlık + Arama Kutusu + Yenile + Kaydet ─────── -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto" Margin="0,0,0,16">
+
+            <!-- Sol: Başlık ve Kayıt Sayısı Rozeti -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <Border Width="6" Height="24" CornerRadius="3" Background="#34D399"/>
+                <TextBlock Text="Kayıtlı Hastalar ve İlaçlar"
+                           FontSize="15" FontWeight="SemiBold"
+                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                           VerticalAlignment="Center"/>
+                <Border Background="#1F10B981" BorderBrush="#10B981"
+                        BorderThickness="1" CornerRadius="10"
+                        Padding="8,2" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ToplamKayitSayisi}"
+                               FontSize="11" FontWeight="Bold"
+                               Foreground="#10B981"/>
+                </Border>
+            </StackPanel>
+
+            <!-- Orta/Sağ: Arama Kutusu -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Margin="0,0,10,0">
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Grid.Column="0" Text="🔍" FontSize="12" Margin="10,0,4,0" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding AramaMetni}"
+                             Watermark="İsim, TC, telefon veya ilaç ara..."
+                             Width="220"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                             FontSize="12"
+                             Padding="4,8"/>
+                </Grid>
+            </Border>
+
+            <!-- Sağ: Yenile Butonu -->
+            <Button Grid.Column="3"
+                    Content="⟳  Yenile"
+                    Command="{Binding KayitlariYukleCommand}"
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Padding="14,8"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    Cursor="Hand"
+                    Margin="0,0,8,0">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                        <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+
+            <!-- Sağ: Değişiklikleri Kaydet Butonu -->
+            <Button Grid.Column="4"
+                    Content="💾  Değişiklikleri Kaydet"
+                    Command="{Binding DegisiklikleriKaydetCommand}"
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Padding="14,8"
+                    CornerRadius="8"
+                    Background="#059669"
+                    Foreground="White"
+                    Cursor="Hand">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#10B981"/>
+                    </Style>
+                    <Style Selector="Button:pressed /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#047857"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
+        </Grid>
+
+        <!-- ── Bilgi / Durum Mesajı Şeridi ───────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12,8"
+                Margin="0,0,0,12"
+                IsVisible="{Binding BilgiMesaji, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="ℹ️" FontSize="13" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding BilgiMesaji}"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ── DataGrid ───────────────────────────────────────────────────── -->
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding FiltrelenmisKayitlar}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  IsReadOnly="False"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                  HeadersVisibility="Column"
+                  SelectionMode="Single"
+                  Background="Transparent"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
+
+            <DataGrid.Styles>
+                <Style Selector="DataGridRow">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                </Style>
+                <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+                    <Setter Property="Fill" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Style>
+                <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+                    <Setter Property="Fill" Value="{DynamicResource SystemControlHighlightListAccentLowBrush}"/>
+                    <Setter Property="Opacity" Value="1"/>
+                </Style>
+                <Style Selector="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Padding" Value="12,10"/>
+                    <Setter Property="MinHeight" Value="38"/>
+                </Style>
+                <Style Selector="DataGridCell">
+                    <Setter Property="Padding" Value="10,6"/>
+                    <Setter Property="FontSize" Value="13"/>
+                </Style>
+            </DataGrid.Styles>
+
+            <DataGrid.Columns>
+                <!-- İsim Soyisim -->
+                <DataGridTextColumn Header="İsim Soyisim"
+                                    Binding="{Binding IsimSoyisim}"
+                                    IsReadOnly="False"
+                                    Width="Auto"/>
+
+                <!-- TC Kimlik -->
+                <DataGridTextColumn Header="TC Kimlik"
+                                    Binding="{Binding TcKimlik}"
+                                    IsReadOnly="False"
+                                    Width="Auto"/>
+
+                <!-- Telefon -->
+                <DataGridTextColumn Header="Telefon"
+                                    Binding="{Binding Telefon}"
+                                    IsReadOnly="False"
+                                    Width="Auto"/>
+
+                <!-- İlaç Adı -->
+                <DataGridTemplateColumn Header="İlaç Adı" Width="150" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:KayitliHastaSatiri">
+                            <TextBlock Text="{Binding IlacAdi}"
+                                       TextWrapping="Wrap"
+                                       Padding="6,4"
+                                       FontSize="13"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                       VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate x:DataType="vm:KayitliHastaSatiri">
+                            <TextBox Text="{Binding IlacAdi, Mode=TwoWay}"
+                                     TextWrapping="Wrap"
+                                     FontSize="13"
+                                     VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- İlaç Bitiş Tarihi -->
+                <DataGridTextColumn Header="İlaç Bitiş"
+                                    Binding="{Binding IlacBitisTarihi}"
+                                    IsReadOnly="False"
+                                    Width="Auto"/>
+
+                <!-- Reçete Bitiş Tarihi -->
+                <DataGridTextColumn Header="Reçete Bitiş"
+                                    Binding="{Binding ReceteBitisTarihi}"
+                                    IsReadOnly="False"
+                                    Width="Auto"/>
+
+                <!-- Kayıt Tarihi -->
+                <DataGridTextColumn Header="Kayıt Tarihi"
+                                    Binding="{Binding KayitTarihi}"
+                                    IsReadOnly="True"
+                                    Width="Auto"/>
+
+                <!-- İlaç SMS -->
+                <DataGridTemplateColumn Header="İlaç SMS" Width="Auto" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:KayitliHastaSatiri">
+                            <Panel VerticalAlignment="Center" Margin="4,0">
+                                <!-- Gönderildi rozeti (yeşil) -->
+                                <Border IsVisible="{Binding IlacSmsGonderildi}"
+                                        Background="#1F10B981" BorderBrush="#10B981"
+                                        BorderThickness="1" CornerRadius="5" Padding="8,3">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="✓" FontSize="11" Foreground="#10B981" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Gönderildi" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Bekliyor rozeti (amber/sarı) -->
+                                <Border IsVisible="{Binding !IlacSmsGonderildi}"
+                                        Background="#1FD97706" BorderBrush="#D97706"
+                                        BorderThickness="1" CornerRadius="5" Padding="8,3">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="⏳" FontSize="10" Foreground="#D97706" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Bekliyor" FontSize="11" Foreground="#D97706" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Panel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Reçete SMS -->
+                <DataGridTemplateColumn Header="Reçete SMS" Width="Auto" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:KayitliHastaSatiri">
+                            <Panel VerticalAlignment="Center" Margin="4,0">
+                                <!-- Gönderildi rozeti (yeşil) -->
+                                <Border IsVisible="{Binding ReceteSmsGonderildi}"
+                                        Background="#1F10B981" BorderBrush="#10B981"
+                                        BorderThickness="1" CornerRadius="5" Padding="8,3">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="✓" FontSize="11" Foreground="#10B981" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Gönderildi" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <!-- Bekliyor rozeti (amber/sarı) -->
+                                <Border IsVisible="{Binding !ReceteSmsGonderildi}"
+                                        Background="#1FD97706" BorderBrush="#D97706"
+                                        BorderThickness="1" CornerRadius="5" Padding="8,3">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Text="⏳" FontSize="10" Foreground="#D97706" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Bekliyor" FontSize="11" Foreground="#D97706" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Panel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- İşlem (Sil) -->
+                <DataGridTemplateColumn Header="İşlem" Width="Auto" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="vm:KayitliHastaSatiri">
+                            <Button Content="Sil"
+                                    x:CompileBindings="False"
+                                    Command="{Binding $parent[UserControl].DataContext.KayitSilCommand}"
+                                    CommandParameter="{Binding}"
+                                    Padding="10,4"
+                                    CornerRadius="6"
+                                    Background="#1FEF4444"
+                                    BorderBrush="#EF4444"
+                                    BorderThickness="1"
+                                    Foreground="#EF4444"
+                                    HorizontalAlignment="Center"
+                                    Cursor="Hand"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>

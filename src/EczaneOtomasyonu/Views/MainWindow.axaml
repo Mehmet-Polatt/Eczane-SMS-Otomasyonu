@@ -1,0 +1,450 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:EczaneOtomasyonu.ViewModels"
+        xmlns:views="using:EczaneOtomasyonu.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="680"
+        x:Class="EczaneOtomasyonu.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Eczane Otomasyon Sistemi"
+        MinWidth="820" MinHeight="540"
+        Width="960" Height="680"
+        Background="{DynamicResource SystemRegionBrush}">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Kaynak Sözlüğü – Sabit Vurgu Renkleri (temadan bağımsız)
+         ════════════════════════════════════════════════════════════════ -->
+    <Window.Resources>
+        <SolidColorBrush x:Key="AccentBlue"    Color="#4F8EF7"/>
+        <SolidColorBrush x:Key="AccentGreen"   Color="#34D399"/>
+        <SolidColorBrush x:Key="AccentRed"     Color="#F87171"/>
+    </Window.Resources>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Ana Düzen  [Başlık | İçerik | Alt Bar]
+         ════════════════════════════════════════════════════════════════ -->
+    <Grid RowDefinitions="Auto,*,Auto" Margin="24,20,24,20">
+
+        <!-- ══════════════════════════════════════════════════════════
+             BAŞLIK + NAVİGASYON BÖLÜMÜ
+             ══════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="20,14"
+                Margin="0,0,0,14">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+
+                <!-- Sol: Logo + Uygulama Adı -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Spacing="12">
+                    <Border Width="38" Height="38" CornerRadius="9"
+                            Background="{DynamicResource SystemControlHighlightAccentBrush}">
+                        <TextBlock Text="💊" FontSize="20"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Spacing="1" VerticalAlignment="Center">
+                        <TextBlock Text="Eczane Otomasyon"
+                                   FontSize="16" FontWeight="Bold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                        <TextBlock Text="OCR · SMS · Hatırlatma"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Orta: Sekme Butonları -->
+                <Border Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="4">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+
+                        <!-- Tarama İşlemleri Sekmesi (Pasif) -->
+                        <Button Name="TaramaSekmesiButton"
+                                Content="🔍  Tarama İşlemleri"
+                                Command="{Binding TaramayaGecCommand}"
+                                IsVisible="{Binding !TaramaSekmesiAktifMi}"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Padding="18,8"
+                                CornerRadius="8"
+                                Background="Transparent"
+                                Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                Cursor="Hand">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <!-- Tarama İşlemleri Sekmesi (Aktif) -->
+                        <Button Name="TaramaSekmesiButtonAktif"
+                                Content="🔍  Tarama İşlemleri"
+                                Command="{Binding TaramayaGecCommand}"
+                                IsVisible="{Binding TaramaSekmesiAktifMi}"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Padding="18,8"
+                                CornerRadius="8"
+                                Background="{StaticResource AccentBlue}"
+                                Foreground="White"
+                                Cursor="Hand"/>
+
+                        <!-- Kayıtlı Hastalar Sekmesi (Pasif) -->
+                        <Button Name="KayitlarSekmesiButton"
+                                Content="📋  Kayıtlı Hastalar"
+                                Command="{Binding KayitlaraGecCommand}"
+                                IsVisible="{Binding !KayitlarSekmesiAktifMi}"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Padding="18,8"
+                                CornerRadius="8"
+                                Background="Transparent"
+                                Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                Cursor="Hand">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <!-- Kayıtlı Hastalar Sekmesi (Aktif) -->
+                        <Button Name="KayitlarSekmesiButtonAktif"
+                                Content="📋  Kayıtlı Hastalar"
+                                Command="{Binding KayitlaraGecCommand}"
+                                IsVisible="{Binding KayitlarSekmesiAktifMi}"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Padding="18,8"
+                                CornerRadius="8"
+                                Background="{StaticResource AccentBlue}"
+                                Foreground="White"
+                                Cursor="Hand"/>
+
+                        <!-- Ayarlar Sekmesi (Pasif) -->
+                        <Button Name="AyarlarSekmesiButton"
+                                Content="⚙️  Ayarlar"
+                                Command="{Binding AyarlaraGecCommand}"
+                                IsVisible="{Binding !AyarlarSekmesiAktifMi}"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Padding="18,8"
+                                CornerRadius="8"
+                                Background="Transparent"
+                                Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                Cursor="Hand">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                                    <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <!-- Ayarlar Sekmesi (Aktif) -->
+                        <Button Name="AyarlarSekmesiButtonAktif"
+                                Content="⚙️  Ayarlar"
+                                Command="{Binding AyarlaraGecCommand}"
+                                IsVisible="{Binding AyarlarSekmesiAktifMi}"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Padding="18,8"
+                                CornerRadius="8"
+                                Background="{StaticResource AccentBlue}"
+                                Foreground="White"
+                                Cursor="Hand"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Sağ: Resim Tara Butonu (yalnızca Tarama sekmesinde) -->
+                <Button Grid.Column="2"
+                        Name="ResimSecButton"
+                        Content="📷  Reçete / Rapor Tara"
+                        Command="{Binding TaraCommand}"
+                        IsEnabled="{Binding !IslemYapiliyor}"
+                        IsVisible="{Binding TaramaSekmesiAktifMi}"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Padding="18,9"
+                        CornerRadius="8"
+                        Background="{StaticResource AccentBlue}"
+                        Foreground="White"
+                        Cursor="Hand">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#3A7DE8"/>
+                        </Style>
+                        <Style Selector="Button:pressed /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#2C6DD4"/>
+                        </Style>
+                        <Style Selector="Button:disabled /template/ ContentPresenter">
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════
+             ORTA: İÇERİK ALANI
+             TaramaSekmesiAktifMi → DataGrid kartı
+             AyarlarSekmesiAktifMi → AyarlarView
+             ══════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="20,16"
+                Margin="0,0,0,14">
+
+            <Panel>
+                <!-- ── Tarama Ekranı ─────────────────────────────────── -->
+                <Grid IsVisible="{Binding TaramaSekmesiAktifMi}"
+                      RowDefinitions="Auto,*">
+
+                    <!-- DataGrid Başlık -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,14"
+                                Orientation="Horizontal" Spacing="10">
+                        <Border Width="6" Height="24" CornerRadius="3"
+                                Background="{StaticResource AccentRed}"/>
+                        <TextBlock Text="Hatalı / Düzeltme Bekleyen Kayıtlar"
+                                   FontSize="15" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                   VerticalAlignment="Center"/>
+                        <Border Background="#1FEF4444" BorderBrush="{StaticResource AccentRed}"
+                                BorderThickness="1" CornerRadius="10"
+                                Padding="8,2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding HataliKayitlar.Count}"
+                                       FontSize="11" FontWeight="Bold"
+                                       Foreground="{StaticResource AccentRed}"/>
+                        </Border>
+                        <TextBlock Text="— Hücreye çift tıklayarak düzeltebilirsiniz"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="4,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1"
+                              Name="HataliKayitlarGrid"
+                              ItemsSource="{Binding HataliKayitlar}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="True"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="True"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              HeadersVisibility="Column"
+                              SelectionMode="Single"
+                              Background="Transparent"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch">
+
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridRow">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                            </Style>
+                            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+                                <Setter Property="Fill" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                                <Setter Property="Opacity" Value="1"/>
+                            </Style>
+                            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+                                <Setter Property="Fill" Value="{DynamicResource SystemControlHighlightListAccentLowBrush}"/>
+                                <Setter Property="Opacity" Value="1"/>
+                            </Style>
+                            <Style Selector="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="12,10"/>
+                                <Setter Property="MinHeight" Value="38"/>
+                            </Style>
+                            <Style Selector="DataGridCell">
+                                <Setter Property="Padding" Value="10,0"/>
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </DataGrid.Styles>
+
+                        <DataGrid.Columns>
+                            <!-- İsim Soyisim -->
+                            <DataGridTextColumn Header="İsim Soyisim"
+                                                Binding="{Binding IsimSoyisim}"
+                                                IsReadOnly="False"
+                                                Width="Auto"/>
+                            <!-- TC Kimlik -->
+                            <DataGridTextColumn Header="TC Kimlik"
+                                                Binding="{Binding TcKimlik}"
+                                                IsReadOnly="False"
+                                                Width="Auto"/>
+                            <!-- Telefon -->
+                            <DataGridTextColumn Header="Telefon"
+                                                Binding="{Binding Telefon}"
+                                                IsReadOnly="False"
+                                                Width="Auto"/>
+                            <!-- İlaç Adı -->
+                            <DataGridTemplateColumn Header="İlaç Adı" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:HataliKayitSatiri">
+                                        <TextBlock Text="{Binding IlacAdi}"
+                                                   TextWrapping="Wrap"
+                                                   Padding="10,6"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate x:DataType="vm:HataliKayitSatiri">
+                                        <TextBox Text="{Binding IlacAdi, Mode=TwoWay}"
+                                                 TextWrapping="Wrap"
+                                                 FontSize="13"
+                                                 VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                            <!-- İlaç Bitiş Tarihi -->
+                            <DataGridTextColumn Header="İlaç Bitiş"
+                                                Binding="{Binding IlacBitisTarihiMetin}"
+                                                IsReadOnly="False"
+                                                Width="Auto"/>
+                            <!-- Reçete Bitiş Tarihi -->
+                            <DataGridTextColumn Header="Reçete Bitiş"
+                                                Binding="{Binding ReceteBitisTarihiMetin}"
+                                                IsReadOnly="False"
+                                                Width="Auto"/>
+                            <!-- Hata Nedeni -->
+                            <DataGridTemplateColumn Header="Hata Nedeni" Width="*" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:HataliKayitSatiri">
+                                        <TextBlock Text="{Binding HataNedeni}"
+                                                   TextWrapping="Wrap"
+                                                   Padding="10,6"
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <!-- Sil butonu -->
+                            <DataGridTemplateColumn Header="İşlem" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:HataliKayitSatiri">
+                                        <Button Content="Sil"
+                                                x:CompileBindings="False"
+                                                Command="{Binding $parent[Window].DataContext.HataliKaydiSilCommand}"
+                                                CommandParameter="{Binding}"
+                                                Padding="10,4"
+                                                CornerRadius="6"
+                                                Background="#1FEF4444"
+                                                BorderBrush="#EF4444"
+                                                BorderThickness="1"
+                                                Foreground="#EF4444"
+                                                HorizontalAlignment="Center"
+                                                Cursor="Hand"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+                <!-- ── Kayıtlı Hastalar Ekranı ────────────────────────────── -->
+                <Panel IsVisible="{Binding KayitlarSekmesiAktifMi}">
+                    <views:KayitliHastalarView DataContext="{Binding KayitliHastalarVm}"/>
+                </Panel>
+
+                <!-- ── Ayarlar Ekranı ────────────────────────────────── -->
+                <Panel IsVisible="{Binding AyarlarSekmesiAktifMi}">
+                    <views:AyarlarView DataContext="{Binding AyarlarVm}"/>
+                </Panel>
+            </Panel>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════
+             ALT BÖLÜM: Durum + Kaydet (yalnızca Tarama sekmesinde)
+             ══════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="20,14"
+                IsVisible="{Binding TaramaSekmesiAktifMi}">
+            <Grid ColumnDefinitions="*,Auto">
+
+                <!-- Durum Mesajı -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                    <Border Width="18" Height="18"
+                            IsVisible="{Binding IslemYapiliyor}">
+                        <Ellipse Width="16" Height="16"
+                                 Stroke="{StaticResource AccentBlue}"
+                                 StrokeThickness="2"/>
+                    </Border>
+                    <TextBlock Name="DurumTextBlock"
+                               Text="{Binding DurumMesaji}"
+                               FontSize="13"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxWidth="560"/>
+                </StackPanel>
+
+                <!-- Düzeltilenleri Kaydet Butonu -->
+                <Button Grid.Column="1"
+                        Name="KaydetButton"
+                        Content="✓  Düzeltilenleri Kaydet"
+                        Command="{Binding KaydetCommand}"
+                        IsEnabled="{Binding !IslemYapiliyor}"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Padding="22,10"
+                        CornerRadius="8"
+                        Background="{StaticResource AccentGreen}"
+                        Foreground="#0A1F14"
+                        Cursor="Hand">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#22C55E"/>
+                        </Style>
+                        <Style Selector="Button:pressed /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#16A34A"/>
+                        </Style>
+                        <Style Selector="Button:disabled /template/ ContentPresenter">
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>

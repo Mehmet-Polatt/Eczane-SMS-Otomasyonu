@@ -1,0 +1,290 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:EczaneOtomasyonu.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="EczaneOtomasyonu.Views.AyarlarView"
+             x:DataType="vm:AyarlarViewModel"
+             Background="Transparent">
+
+    <Design.DataContext>
+        <vm:AyarlarViewModel/>
+    </Design.DataContext>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Ana Kart
+         ════════════════════════════════════════════════════════════════ -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="20" Margin="0,4,0,20">
+
+            <!-- ── Başlık ───────────────────────────────────────────── -->
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Border Width="6" Height="28" CornerRadius="3" Background="#4F8EF7"/>
+                <TextBlock Text="Uygulama Ayarları"
+                           FontSize="17"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- ── Görünüm Ayarları (Karanlık / Açık Mod) Kartı ──────────── -->
+            <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="24,20">
+                <StackPanel Spacing="14">
+
+                    <!-- Başlık ve Açıklama -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="🎨  Görünüm Ayarları"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                        <TextBlock FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   TextWrapping="Wrap"
+                                   Text="Göz yorgunluğunu azaltmak için karanlık ve açık tema arasında geçiş yapın."/>
+                    </StackPanel>
+
+                    <!-- ToggleSwitch ile durum ve geçiş -->
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="14,10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="Tema Seçimi"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                                <TextBlock Text="Açık mod ve karanlık mod arasında geçiş yapın"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                            </StackPanel>
+
+                            <ToggleSwitch Grid.Column="1"
+                                          Name="KaranlikModToggle"
+                                          IsChecked="{Binding KaranlikModAktif, Mode=TwoWay}"
+                                          OnContent="🌙 Karanlık"
+                                          OffContent="☀️ Açık"
+                                          IsEnabled="{Binding !IslemYapiliyor}"
+                                          VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ── GSM Modem Portu Kartı ─────────────────────────────── -->
+            <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="24,20">
+                <StackPanel Spacing="14">
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="📡  GSM Modem Port Adı"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                        <TextBlock FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   TextWrapping="Wrap"
+                                   Text="macOS: /dev/tty.usbserial-XXXX  |  Windows: COM3, COM4"/>
+                    </StackPanel>
+
+                    <TextBox Name="GsmPortTextBox"
+                             Text="{Binding GsmPort}"
+                             IsEnabled="{Binding !IslemYapiliyor}"
+                             Watermark="/dev/tty.usbserial-XXXX  veya  COM3"
+                             FontSize="13"
+                             Height="40"
+                             CornerRadius="8"
+                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                             Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                             Padding="12,0"
+                             FontFamily="Consolas, Menlo, monospace"/>
+
+                    <!-- Platform notları -->
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <StackPanel Spacing="4">
+                            <TextBlock FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                       FontWeight="SemiBold"
+                                       Text="💡 Port adını nasıl bulabilirim?"/>
+                            <TextBlock FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="  Mac → Terminal: ls /dev/tty.* | grep usb"/>
+                            <TextBlock FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="  Windows → Aygıt Yöneticisi → Bağlantı Noktaları (COM ve LPT)"/>
+                            <TextBlock FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="  Boş bırakırsanız SMS gönderimi debug modunda çalışır."/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ── İlaç SMS Şablonu Kartı ─────────────────────────────── -->
+            <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="24,20">
+                <StackPanel Spacing="14">
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="💊  İlaç SMS Şablonu"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                        <TextBlock FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   TextWrapping="Wrap"
+                                   Text="İlacın bitmesine 3 gün kaldığında gönderilir. {IsimSoyisim} ve {IlacAdi} otomatik değiştirilir."/>
+                    </StackPanel>
+
+                    <TextBox Name="IlacSmsSablonuTextBox"
+                             Text="{Binding IlacSmsSablonu}"
+                             IsEnabled="{Binding !IslemYapiliyor}"
+                             Watermark="Sayın {IsimSoyisim}, {IlacAdi} ilacınızın bitmesine 3 gün kalmıştır."
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Height="90"
+                             FontSize="13"
+                             CornerRadius="8"
+                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                             Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                             Padding="12,10"
+                             VerticalContentAlignment="Top"/>
+
+                    <!-- Önizleme -->
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="👁  Örnek Çıktı:"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock FontSize="12"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="Sayın Ayşe Yılmaz, Aspirin 500mg ilacınızın bitmesine 3 gün kalmıştır."/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ── Reçete SMS Şablonu Kartı ─────────────────────────── -->
+            <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="24,20">
+                <StackPanel Spacing="14">
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="📋  Reçete SMS Şablonu"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+                        <TextBlock FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   TextWrapping="Wrap"
+                                   Text="Reçete süresinin bitmesine 3 gün kaldığında gönderilir. {IsimSoyisim} ve {IlacAdi} otomatik değiştirilir."/>
+                    </StackPanel>
+
+                    <TextBox Name="ReceteSmsSablonuTextBox"
+                             Text="{Binding ReceteSmsSablonu}"
+                             IsEnabled="{Binding !IslemYapiliyor}"
+                             Watermark="Sayın {IsimSoyisim}, {IlacAdi} ilacınızın reçete süresinin bitmesine 3 gün kalmıştır."
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Height="90"
+                             FontSize="13"
+                             CornerRadius="8"
+                             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                             Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                             Padding="12,10"
+                             VerticalContentAlignment="Top"/>
+
+                    <!-- Önizleme -->
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="👁  Örnek Çıktı:"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock FontSize="12"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="Sayın Ayşe Yılmaz, Aspirin 500mg ilacınızın reçete süresinin bitmesine 3 gün kalmıştır."/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- ── Kaydet + Durum Satırı ─────────────────────────────── -->
+            <Grid ColumnDefinitions="*,Auto">
+
+                <!-- Durum Mesajı -->
+                <TextBlock Grid.Column="0"
+                           Text="{Binding DurumMesaji}"
+                           Foreground="{Binding DurumRengi}"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+
+                <!-- Ayarları Kaydet Butonu -->
+                <Button Grid.Column="1"
+                        Name="KaydetButton"
+                        Content="💾  Ayarları Kaydet"
+                        Command="{Binding KaydetCommand}"
+                        IsEnabled="{Binding !IslemYapiliyor}"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Padding="22,10"
+                        CornerRadius="8"
+                        Background="#4F8EF7"
+                        Foreground="White"
+                        Cursor="Hand">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#3A7DE8"/>
+                        </Style>
+                        <Style Selector="Button:pressed /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#2C6DD4"/>
+                        </Style>
+                        <Style Selector="Button:disabled /template/ ContentPresenter">
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+                            <Setter Property="TextElement.Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </Grid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

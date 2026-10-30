@@ -1,0 +1,35 @@
+# .NET / Visual Studio
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build and publish output
+artifacts/
+publish/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# SQLite databases and sidecar files (may contain patient data)
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+Eczane.db
+eczane.db
+
+# SMS logs
+sms_log.txt
+**/sms_log.txt
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
